@@ -1,12 +1,12 @@
 {
-  "name": "hoandang/wordpress-s3-uploads-drop-in",
+  "name": "borislihk/wordpress-s3-uploads-drop-in",
   "license": "MIT",
   "description": "Wordpress S3 Uploads Drop In",
   "homepage": "https://github.com/hoandang/wordpress-s3-uploads-drop-in",
   "authors": [
     {
-      "name": "Hoan Dang",
-      "email": "danghuyhoan@gmail.com"
+      "name": "Boris Li",
+      "email": "boris@s1t2.com.au"
     }
   ], 
   "type": "wordpress-plugin",

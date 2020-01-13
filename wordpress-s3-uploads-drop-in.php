@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: S3 Uploads DropIn
-  Version: 1.6
+  Version: 1.7
 */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -34,7 +34,7 @@ class S3Uploads
   {
     $this->initS3Client();
     add_filter('upload_dir', [$this, 'filterUploadDir']);
-    add_filter('wp_update_attachment_metadata', [$this, 'onUpdatedAttachment'] , 10, 2);
+    add_filter('wp_generate_attachment_metadata', [$this, 'onUpdatedAttachment'] , 10, 2);
     add_action('delete_attachment', [$this, 'onBeforeDeleted']);
   }
 
