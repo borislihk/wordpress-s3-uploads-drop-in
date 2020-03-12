@@ -68,7 +68,7 @@ class S3Uploads
   {
     $attachments = array_values(array_merge(
       [$this->attachmentMainPath($attachmentId)],
-			this->attachmentOtherPaths($attachmentId)
+			$this->attachmentOtherPaths($attachmentId)
     ));
 
     foreach($attachments as $attachment)
