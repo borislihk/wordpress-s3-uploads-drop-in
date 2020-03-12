@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: S3 Uploads DropIn
-  Version: 1.7
+  Version: 1.8
 */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -66,12 +66,9 @@ class S3Uploads
 
   public function onUpdatedAttachment($attachmentData, $attachmentId)
   {
-    $sizes = $attachmentData['sizes'] ?? []; 
-    $paths = array_filter(array_map([$this, 'attachmentPath'], $sizes));
-
     $attachments = array_values(array_merge(
       [$this->attachmentMainPath($attachmentId)],
-      $paths
+			this->attachmentOtherPaths($attachmentId)
     ));
 
     foreach($attachments as $attachment)
@@ -108,8 +105,7 @@ class S3Uploads
   public function uploadToS3($path)
   {
     $source = fopen($path, 'rb');
-    $filename = basename($path);
-    $key =  getenv('AWS_S3_PATH') . wp_get_upload_dir()['subdir'] . "/$filename";
+    $key =  getenv('AWS_S3_PATH') . end(explode('uploads', $path));
     $uploader = new ObjectUploader(
       $this->s3Client,
       getenv('AWS_S3_BUCKET'),
@@ -121,12 +117,13 @@ class S3Uploads
 
   private function attachmentLocation($attachmentId)
   {
-    $attachmentMainPath = $this->attachmentMainPath($attachmentId);
-    $pathInfo = pathinfo($attachmentMainPath);
-    $dirname = explode('/', $pathInfo['dirname']);
-    $year = $dirname[count($dirname) - 2];
-    $month = $dirname[count($dirname) - 1];
-    return "uploads/$year/$month";
+		return pathinfo($this->attachmentMainPath($attachmentId))['dirname']:
+    //$attachmentMainPath = $this->attachmentMainPath($attachmentId);
+    //$pathInfo = pathinfo($attachmentMainPath);
+    //$dirname = explode('/', $pathInfo['dirname']);
+    //$year = $dirname[count($dirname) - 2];
+    //$month = $dirname[count($dirname) - 1];
+    //return "uploads/$year/$month";
   }
 
   private function attachmentMainPath($attachmentId)
