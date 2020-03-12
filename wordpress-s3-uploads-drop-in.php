@@ -117,7 +117,7 @@ class S3Uploads
 
   private function attachmentLocation($attachmentId)
   {
-		return pathinfo($this->attachmentMainPath($attachmentId))['dirname']:
+		return pathinfo($this->attachmentMainPath($attachmentId))['dirname'];
     //$attachmentMainPath = $this->attachmentMainPath($attachmentId);
     //$pathInfo = pathinfo($attachmentMainPath);
     //$dirname = explode('/', $pathInfo['dirname']);
