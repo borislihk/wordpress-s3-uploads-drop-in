@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: S3 Uploads DropIn
-  Version: 1.8
+  Version: 1.8.3
 */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -66,10 +66,10 @@ class S3Uploads
 
   public function onUpdatedAttachment($attachmentData, $attachmentId)
   {
-    $attachments = array_values(array_merge(
+    $attachments = array_unique(array_values(array_merge(
       [$this->attachmentMainPath($attachmentId)],
 			$this->attachmentOtherPaths($attachmentId)
-    ));
+    )));
 
     foreach($attachments as $attachment)
     {
@@ -105,7 +105,8 @@ class S3Uploads
   public function uploadToS3($path)
   {
     $source = fopen($path, 'rb');
-    $key =  getenv('AWS_S3_PATH') . end(explode('uploads', $path));
+    $path_parts = explode('uploads', $path);
+    $key =  getenv('AWS_S3_PATH') . end($path_parts);
     $uploader = new ObjectUploader(
       $this->s3Client,
       getenv('AWS_S3_BUCKET'),
