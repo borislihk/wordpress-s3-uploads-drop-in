@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: S3 Uploads DropIn
-  Version: 1.8.3
+  Version: 1.8.4
 */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -33,9 +33,17 @@ class S3Uploads
   public function init()
   {
     $this->initS3Client();
+
+		// media library
     add_filter('upload_dir', [$this, 'filterUploadDir']);
     add_filter('wp_generate_attachment_metadata', [$this, 'onUpdatedAttachment'] , 10, 2);
     add_action('delete_attachment', [$this, 'onBeforeDeleted']);
+
+		// bb-plugin
+		add_action('fl_builder_after_save_layout', [$this, 'uploadBuilderCaches'], 10, 1);
+		add_action('fl_builder_after_save_draft', [$this, 'uploadBuilderCaches'], 10, 1);
+		add_action('render_node', [$this, 'uploadBuilderCaches']);
+		add_action('save_psot', [$this, 'uploadBuilderCaches'], 10, 1);
   }
 
   private function initS3Client()
@@ -151,4 +159,49 @@ class S3Uploads
   {
     return array_keys(wp_get_attachment_metadata($attachmentId)['sizes'] ?? []); 
   }
+
+	public function uploadBuilderCaches($post_id)
+	{
+		if (empty($post_id)) return;
+		$cache_dir = 'bb-plugin/cache';
+		$path = wp_upload_dir()['basedir'] . "/$cache_dir/";
+		$prefix = $post_id . '-layout';
+		$suffix = [
+			'.css',
+			'.js',
+			'-partial.css',
+			'-partial.js',
+			'-draft.css',
+			'-draft.js',
+			'-draft-partial.css',
+			'-draft-partial.js',
+			'-preview.css'
+		];
+		$caches = array_map(
+			function ($suffix) use ($path, $prefix)
+			{
+				$cache_file = $path . $prefix . $suffix;
+				// create preview from draft
+				if (!file_exists($cache_file) && $suffix == 'preview.css' && file_exists($path . $prefix . '-draft.css'))
+				{
+					copy($path . $prefix . '-draft.css', $cache_file);
+				}
+				return $cache_file;
+			},
+			$suffix
+		);
+		foreach ($cache_files as $cache_file)
+		{
+			if (file_exists($cache_file))
+			{
+				// upload to s3
+				$this->uploadToS3($cache_file);
+			}
+		}
+	}
+
+	private function log_to_file($msg)
+	{
+		file_put_contents('uploader.log', $msg, FILE_APPEND);
+	}
 }
