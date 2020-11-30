@@ -43,7 +43,7 @@ class S3Uploads
 		add_action('fl_builder_after_save_layout', [$this, 'uploadBuilderCaches'], 10, 1);
 		add_action('fl_builder_after_save_draft', [$this, 'uploadBuilderCaches'], 10, 1);
 		add_action('render_node', [$this, 'uploadBuilderCaches']);
-		add_action('save_psot', [$this, 'uploadBuilderCaches'], 10, 1);
+		add_action('save_post', [$this, 'uploadBuilderCaches'], 10, 1);
   }
 
   private function initS3Client()
