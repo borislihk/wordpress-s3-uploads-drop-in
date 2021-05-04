@@ -2,7 +2,7 @@
   "name": "s1t2/wordpress-s3-uploads-drop-in",
   "license": "MIT",
   "description": "Wordpress S3 Uploads Drop In",
-  "homepage": "https://bitbucket.org/s1t2/s1t2-wordpress-ses-drop-in",
+  "homepage": "https://bitbucket.org/s1t2/s1t2-wordpress-s3-uploads-drop-in.git",
   "authors": [
     {
       "name": "S1T2",
